@@ -5,6 +5,10 @@
 import sqlite3
 import pandas as pd
 import streamlit as st
+from streamlit_extras.stylable_container import stylable_container
+from streamlit_extras.stoggle import stoggle
+from streamlit_extras.badges import badge
+from streamlit_extras.bottom_container import bottom
 
 def setup_function():
   connection = sqlite3.connect("general_ledger.db")
@@ -21,14 +25,25 @@ def streamlit_function():
   connection = sqlite3.connect("general_ledger.db")
   cursor = connection.cursor()
   st.title("Wolaa!")
-  entry_tab, acct_tab, report_tab = st.tabs(
-      ["📝 New Entry", "✍ New Account", "📈 Reporting"])
+  home_tab, entry_tab, acct_tab, report_tab = st.tabs(
+      ["🏠 Home", "📝 New Entry", "✍ New Account", "📈 Reporting"])
 
   #loading this at the top level since it could be referenced in multiple locations
   coa_data = cursor.execute(
       "SELECT account_num, account_name, account_type FROM accounts ORDER BY account_num"
   ).fetchall()
   df_coa = pd.DataFrame(coa_data).rename(columns={0: "Number",1: "Name",2: "Type"})
+
+  with home_tab:
+    st.write("This is my test application")
+    block_posting = st.toggle("Lock Posting")
+    with stylable_container(key="Test_button", css_styles="button { border: 1px solid rgb(49,51,63,0.2); background-color: green; color: white; border-radius: 20px}"):
+      st.button("Test Button!")
+    st.button("Normal")
+    stoggle("Company Information", "Blah Blah Blah")
+    stoggle("Disclaimer", "Don't blame me")
+    with bottom():
+      badge(type="github", name="onesinglefin/streamlit")
 
   #Entry 
   with entry_tab:
@@ -54,7 +69,7 @@ def streamlit_function():
 
       submit_entry = st.form_submit_button("Post Entry")
       if submit_entry:
-        if d_amt + c_amt == 0:
+        if d_amt + c_amt == 0 and block_posting == False:
           previous_entry_no = cursor.execute("SELECT MAX(entry_no) from entries").fetchall()[0][0]
           if previous_entry_no:
             next_entry_no = previous_entry_no + 1 
@@ -67,9 +82,12 @@ def streamlit_function():
           cursor.execute(
               "INSERT INTO entries (entry_no, date, account, amount) VALUES (?,?,?,?)",
               (next_entry_no, e_date, c_acct[0].split(" - ")[0], c_amt))
+        if block_posting == True:
+          entry_tab.write(f"G/L Posting is locked, please see settings")
         if d_amt + c_amt != 0:
           print(entry_tab.write(f"Entry out of balance by {d_amt + c_amt}"))
         connection.commit()
+        
 
   #new account tab
   with acct_tab:
@@ -150,9 +168,7 @@ def streamlit_function():
 
     #   ytd = cash_df.merge(cs, how='left', left_index=True, right_index=True).sort_values(by=["Date_x"])
     #   st.line_chart(ytd, x="Date_x", y="Amount_y")
-
   connection.close()
-
 
 if __name__ == "__main__":
 #   setup_function()
