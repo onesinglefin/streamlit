@@ -22,11 +22,13 @@ def setup_function():
 
 
 def streamlit_function():
+  block_posting = False
   connection = sqlite3.connect("general_ledger.db")
   cursor = connection.cursor()
+  header1, header2 = st.columns(2)
   st.title("Wolaa!")
-  home_tab, entry_tab, acct_tab, report_tab = st.tabs(
-      ["🏠 Home", "📝 New Entry", "✍ New Account", "📈 Reporting"])
+  home_tab, entry_tab, acct_tab, report_tab, settings_tab = st.tabs(
+      ["🏠 Home", "📝 New Entry", "✍ New Account", "📈 Reporting", "🔧 Settings"])
 
   #loading this at the top level since it could be referenced in multiple locations
   coa_data = cursor.execute(
@@ -35,11 +37,7 @@ def streamlit_function():
   df_coa = pd.DataFrame(coa_data).rename(columns={0: "Number",1: "Name",2: "Type"})
 
   with home_tab:
-    st.write("This is my test application")
-    block_posting = st.toggle("Lock Posting")
-    with stylable_container(key="Test_button", css_styles="button { border: 1px solid rgb(49,51,63,0.2); background-color: green; color: white; border-radius: 20px}"):
-      st.button("Test Button!")
-    st.button("Normal")
+    block_posting = st.toggle("Lock Posting", value=False)
     stoggle("Company Information", "Blah Blah Blah")
     stoggle("Disclaimer", "Don't blame me")
     with bottom():
@@ -66,8 +64,8 @@ def streamlit_function():
             account_options,
             max_selections=1)
         c_amt = st.number_input("Credit Amount")
-
-      submit_entry = st.form_submit_button("Post Entry")
+      with stylable_container(key="Test_button", css_styles="button { border: 1px solid rgb(49,51,63,0.2); background-color: green; color: white; border-radius: 20px}"):
+        submit_entry = st.form_submit_button("Post Entry")
       if submit_entry:
         if d_amt + c_amt == 0 and block_posting == False:
           previous_entry_no = cursor.execute("SELECT MAX(entry_no) from entries").fetchall()[0][0]
@@ -156,6 +154,12 @@ def streamlit_function():
                      use_container_width=True,
                      hide_index=True)
   
+    with settings_tab:
+
+      st.markdown("""
+                  - Can I put the settings at the end or will I *always* run into the referenced before assignment error?
+                  - Is this inline?""")
+
 
     # get_cash = st.button("Run Cash Chart", key="cash_run")
     # if get_cash:
