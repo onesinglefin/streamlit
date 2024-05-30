@@ -1,4 +1,5 @@
 import streamlit as st
+import sqlite3
 from streamlit_extras.stoggle import stoggle
 from streamlit_extras.badges import badge
 from streamlit_extras.bottom_container import bottom
@@ -8,8 +9,15 @@ st.set_page_config(
     page_icon="🔧",
 )
 
+connection = sqlite3.connect("general_ledger.db")
+cursor = connection.cursor()
 
-block_posting = st.toggle("Lock Posting", value=False)
+st.header(cursor.execute(f"SELECT company_name from company_settings").fetchall()[0][0])
+st.subheader("Sompany Settings")
+
+#this block doesn't work at all
+block_posting = st.toggle("Lock Posting", value=st.session_state.block_posting)
+
 
 st.markdown("""
             

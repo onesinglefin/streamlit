@@ -13,7 +13,10 @@ connection = sqlite3.connect("general_ledger.db")
 cursor = connection.cursor()
 
 with st.form(key="new_je_form", clear_on_submit=True, border=False):
-    st.header("Add Journal Entry")
+
+    st.header(cursor.execute(f"SELECT company_name from company_settings").fetchall()[0][0])
+    st.subheader("Add Journal Entry")
+    
     e_date = st.date_input("Posting Date")
     entry_tab_left, entry_tab_right = st.columns(2)
     account_options = [x[0] + " - " + x[1] for x in st.session_state.coa_data]

@@ -11,12 +11,28 @@ def setup_function():
   connection = sqlite3.connect("general_ledger.db")
   cursor = connection.cursor()
   cursor.execute(
-      "CREATE TABLE IF NOT EXISTS entries (entry_no INTEGER, date TEXT, account TEXT, amount REAL)"
+    "CREATE TABLE IF NOT EXISTS entries (entry_no INTEGER, date TEXT, account TEXT, amount REAL)"
   )
   cursor.execute(
-      "CREATE TABLE IF NOT EXISTS accounts (account_num TEXT PRIMARY KEY, account_name TEXT, account_type TEXT)"
+    "CREATE TABLE IF NOT EXISTS accounts (account_num TEXT PRIMARY KEY, account_name TEXT, account_type TEXT)"
   )
   
+  cursor.execute(
+    "CREATE TABLE IF NOT EXISTS company_settings (company_name TEXT PRIMARY KEY, year_end_date TEXT, block_posting BOOL, ar_account TEXT, ap_account TEXT)"
+  )
+
+  cursor.execute(
+    "CREATE TABLE IF NOT EXISTS customers (cust_name TEXT PRIMARY KEY, cust_address TEXT, cust_active BOOL)"
+  )
+
+  cursor.execute(
+    "CREATE TABLE IF NOT EXISTS vendors (vend_name TEXT PRIMARY KEY, vend_address TEXT, vend_active BOOL)"
+  )
+
+  cursor.execute(
+                    "INSERT INTO company_settings (company_name, year_end_date, block_posting, ap_account) VALUES (?,?,?,?)",
+                    ("World Domination Inc", "2024-12-31", False, 2200))
+  connection.commit()
 
 def streamlit_function():
 
@@ -43,7 +59,9 @@ def streamlit_function():
     st.session_state.coa_data = coa_data
 
 
-  st.header("Company Main Page")
+  # st.header("Company Main Page")
+  st.header(cursor.execute(f"SELECT company_name from company_settings").fetchall()[0][0])
+  st.subheader("Company Main Page")
 
   todays_date = date.today()
   month_agos_date = todays_date - timedelta(days=30)
@@ -56,5 +74,5 @@ def streamlit_function():
   connection.close()
 
 if __name__ == "__main__":
-#   setup_function()
+  # setup_function()
   streamlit_function()
