@@ -4,6 +4,8 @@
 
 import sqlite3
 import streamlit as st
+from streamlit_extras.stylable_container import stylable_container
+from datetime import date, timedelta
 
 def setup_function():
   connection = sqlite3.connect("general_ledger.db")
@@ -14,7 +16,7 @@ def setup_function():
   cursor.execute(
       "CREATE TABLE IF NOT EXISTS accounts (account_num TEXT PRIMARY KEY, account_name TEXT, account_type TEXT)"
   )
-
+  
 
 def streamlit_function():
 
@@ -39,6 +41,17 @@ def streamlit_function():
   ).fetchall()
   if "coa_data" not in st.session_state:
     st.session_state.coa_data = coa_data
+
+
+  st.header("Company Main Page")
+
+  todays_date = date.today()
+  month_agos_date = todays_date - timedelta(days=30)
+
+  #need to use cash account type instead of account 1000
+  current_cash_bal = cursor.execute(f"SELECT date, account, SUM(amount) as balance FROM entries WHERE DATE(date) <= '{str(todays_date)}' AND account = '1000' GROUP BY account HAVING balance IS NOT NULL").fetchall()[0][-1]
+  prior_cash_bal = cursor.execute(f"SELECT date, account, SUM(amount) as balance FROM entries WHERE DATE(date) <= '{str(month_agos_date)}' AND account = '1000' GROUP BY account HAVING balance IS NOT NULL").fetchall()[0][-1]
+  st.metric("Cash Balance (30 day change)",current_cash_bal,prior_cash_bal-current_cash_bal)
 
   connection.close()
 

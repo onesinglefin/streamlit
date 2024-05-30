@@ -15,7 +15,9 @@ st.markdown("""
             
                   - Can I put the settings at the end or will I *always* run into the referenced before assignment error? Likely need to store in db and retrieve to session state
                   - Need to validate that an account number isn't already in use before trying to add it
-                  - Create company information table"""
+                  - Create company information table
+                  - Add widgets for KPIs to main page
+            """
             
             
             )

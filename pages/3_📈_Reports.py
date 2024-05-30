@@ -43,9 +43,7 @@ if report_option == "Trial Balance":
     if get_tb:
         st.header("Company Trial Balance")
         st.subheader(f"(As of {tb_date})")
-        info_tb = cursor.execute(
-            f"SELECT date, account, SUM(amount) as balance FROM entries WHERE DATE(date) <= '{str(tb_date)}' GROUP BY account HAVING balance IS NOT NULL").fetchall(
-            )
+        info_tb = cursor.execute(f"SELECT date, account, SUM(amount) as balance FROM entries WHERE DATE(date) <= '{str(tb_date)}' GROUP BY account HAVING balance IS NOT NULL").fetchall()
         entries_df = pd.DataFrame(info_tb).rename(columns={0:"Date", 1:"Acct No", 2: "Balance"})
 
         tb_df = entries_df.merge(df_coa, how='left', left_on="Acct No", right_on="Number")
