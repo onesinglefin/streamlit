@@ -12,7 +12,7 @@ connection = sqlite3.connect("general_ledger.db")
 cursor = connection.cursor()
 df_coa = pd.DataFrame(st.session_state.coa_data).rename(columns={0: "Number",1: "Name",2: "Type"}) 
 
-st.header(cursor.execute(f"SELECT company_name from company_settings").fetchall()[0][0])
+st.header(st.session_state.co_name)
 st.subheader("Reporting")
 report_option = st.selectbox("Select your Report",("", "Journal Entries", "Chart of Accounts", "Trial Balance"))
   

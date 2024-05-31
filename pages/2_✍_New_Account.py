@@ -11,7 +11,7 @@ st.set_page_config(
 connection = sqlite3.connect("general_ledger.db")
 cursor = connection.cursor()
 
-st.header(cursor.execute(f"SELECT company_name from company_settings").fetchall()[0][0])
+st.header(st.session_state.co_name)
 st.subheader("Add New General Ledger Account")
 
 with st.form("new_acct_form", clear_on_submit=True, border=False):
@@ -31,7 +31,7 @@ with st.form("new_acct_form", clear_on_submit=True, border=False):
                     "INSERT INTO accounts (account_num, account_name, account_type) VALUES (?,?,?)",
                     (acct_no, acct_name, acct_type[0]))
                 connection.commit()
-                # rerun the COA data to session state
+                # st.rerun() DOESN'T UPDATE OTHER PAGES
 
             else:
                 st.write("This account number is already in use")

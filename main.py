@@ -49,7 +49,10 @@ def streamlit_function():
   connection = sqlite3.connect("general_ledger.db")
   cursor = connection.cursor()
 
+  co_name = cursor.execute(f"SELECT company_name from company_settings").fetchall()[0][0]
 
+  if "co_name" not in st.session_state:
+    st.session_state.co_name = co_name
 
   #load coa and send to session state since it could be referenced in multiple locations
   coa_data = cursor.execute(
