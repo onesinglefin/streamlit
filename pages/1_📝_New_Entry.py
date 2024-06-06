@@ -34,7 +34,7 @@ with st.form(key="new_je_form", clear_on_submit=True, border=False):
             account_options,
             max_selections=1)
         c_amt = st.number_input("Credit Amount")
-    with stylable_container(key="Test_button", css_styles="button { border: 1px solid rgb(49,51,63,0.2); background-color: green; color: white; border-radius: 20px}"):
+    with stylable_container(key="Test_button", css_styles="button { border: 1px solid rgb(0,255,0,0.2); background-color: green; color: white; border-radius: 20px}"):
         submit_entry = st.form_submit_button("Post Entry")
         if submit_entry:
             if d_amt + c_amt == 0 and st.session_state.block_posting == False:

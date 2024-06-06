@@ -51,15 +51,15 @@ with st.form("settings_form", clear_on_submit=True):
 
 st.markdown("""
             
-                  - Can I put the settings at the end or will I *always* run into the referenced before assignment error? Likely need to store in db and retrieve to session state
-                  - Need to validate that an account number isn't already in use before trying to add it
-                  - Create company information table
-                  - Add widgets for KPIs to main page
+                - Create company information table
+                - Put reports page in a form? 
+                - Add widgets for KPIs to main page
             """
             
             
             )
-stoggle("Company Information", "Blah Blah Blah")
-stoggle("Disclaimer", "Don't blame me")
+
 with bottom():
+    stoggle("Company Information", "Wolaa, the world's lamest accounting application, is a wholy-owned subsidiary of World Domination Incorporated (WDI)")
+    stoggle("Disclaimer", "World Domination Incorporated and its subsidiaries are not responsible for anything. Ever. Don't ask again.")
     badge(type="github", name="onesinglefin/streamlit")

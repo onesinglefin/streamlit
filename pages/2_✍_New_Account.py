@@ -23,7 +23,7 @@ with st.form("new_acct_form", clear_on_submit=True, border=False):
         "Cost of Sales", "Expenses"
     ],
                                 max_selections=1)
-    with stylable_container(key="Test_button", css_styles="button { border: 1px solid rgb(49,51,63,0.2); background-color: green; color: white; border-radius: 20px}"):
+    with stylable_container(key="Test_button", css_styles="button { border: 1px solid rgb(0,255,0,0.2); background-color: green; color: white; border-radius: 20px}"):
         submit = st.form_submit_button("Add Account")
         if submit:
             if acct_no not in pd.DataFrame(st.session_state.coa_data)[0].values:

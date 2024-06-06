@@ -72,7 +72,7 @@ def streamlit_function():
   #need to use cash account type instead of account 1000
   current_cash_bal = cursor.execute(f"SELECT date, account, SUM(amount) as balance FROM entries WHERE DATE(date) <= '{str(todays_date)}' AND account = '1000' GROUP BY account HAVING balance IS NOT NULL").fetchall()[0][-1]
   prior_cash_bal = cursor.execute(f"SELECT date, account, SUM(amount) as balance FROM entries WHERE DATE(date) <= '{str(month_agos_date)}' AND account = '1000' GROUP BY account HAVING balance IS NOT NULL").fetchall()[0][-1]
-  st.metric("Cash Balance (30 day change)",current_cash_bal,prior_cash_bal-current_cash_bal)
+  st.metric("Cash Balance (30 day change)",f'{current_cash_bal:,.2f}',f'{round(current_cash_bal-prior_cash_bal,2):,.2f}')
 
   connection.close()
 
